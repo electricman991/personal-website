@@ -13,7 +13,7 @@ interface Props {
 const { title, description, image = '/static/twitter-card.png' } = Astro.props; // Default social image
 const fullTitle = `${title} | ${SITE_TITLE}`;
 
-const imageUrl = new URL(image, Astro.url).href
+const imageUrl = new URL(image, import.meta.env.ASTRO_PUBLIC_URL).href
 ---
 
 <!-- Global Metadata -->
