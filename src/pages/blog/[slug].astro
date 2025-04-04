@@ -1,0 +1,63 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Tag from '../../components/Tag.astro';
+
+// 1. Generate paths for all blog posts
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug }, // The slug is used in the URL
+    props: { post }, // Pass the full post object to the component
+  }));
+}
+
+// 2. Get the specific post data from props
+type Props = { post: CollectionEntry<'blog'> };
+const { post } = Astro.props;
+const { Content } = await post.render(); // Render Markdown/MDX content
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="max-w-3xl mx-auto">
+    {post.data.heroImage && (
+        <img
+            src={post.data.heroImage}
+            alt={`Hero image for ${post.data.title}`}
+            class="w-full h-64 object-cover rounded-lg mb-8 shadow-md"
+            width={1000} height={400} loading="lazy"
+        />
+    )}
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-gray-900 dark:text-white">{post.data.title}</h1>
+    <div class="flex justify-between items-center mb-6 text-sm text-gray-500 dark:text-gray-400">
+      <time datetime={post.data.pubDate.toISOString()}>
+        Published: {
+          post.data.pubDate.toLocaleDateString('en-us', {
+            year: 'numeric', month: 'short', day: 'numeric',
+          })
+        }
+      </time>
+      {post.data.updatedDate && (
+        <span>
+            Updated: {
+              post.data.updatedDate.toLocaleDateString('en-us', {
+                 year: 'numeric', month: 'short', day: 'numeric',
+              })
+            }
+        </span>
+      )}
+    </div>
+
+    <!-- Display Tags -->
+    {post.data.tags && post.data.tags.length > 0 && (
+        <div class="mb-8">
+            <span class="font-semibold mr-2">Skills/Topics:</span>
+            {post.data.tags.map((tag) => <Tag tag={tag} />)}
+        </div>
+    )}
+
+    <div class="prose dark:prose-invert max-w-none lg:prose-lg">
+      <Content /> {/* Renders the actual post content */}
+    </div>
+  </article>
+</BaseLayout>

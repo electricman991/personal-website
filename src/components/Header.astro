@@ -1,0 +1,63 @@
+---
+import { SITE_TITLE } from '../consts'; // Optional: Define constants in src/consts.ts
+const siteTitle = SITE_TITLE ?? 'My Personal Site';
+
+import ThemeToggleButton from './ThemeToggleButton.astro';
+
+const navItems = [
+    { name: 'Home', href: '/'},
+    { name: 'Blog', href: '/blog'},
+    { name: 'Projects', href: '/projects'},
+    { name: 'About', href: '/about'}
+]
+---
+<header class="bg-gray-100 dark:bg-gray-800 py-4 shadow-md sticky top-0 z-50">
+  <nav class="container mx-auto px-4 flex justify-between items-center">
+    <a href="/" class="text-xl font-bold text-gray-800 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400">
+      {siteTitle}
+    </a>
+    
+    <div class="flex items-center space-x-4 md:space-x-6"> {/* Wrapper div */}
+        <ul class="hidden lg:flex space-x-4 md:space-x-6">
+            {navItems.map(item => (
+                <li>
+                    {/* Update link styles for dark mode if needed */}
+                    <a
+                        href={item.href}
+                        class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                        aria-current={Astro.url.pathname === item.href ? 'page' : false}
+                        class:list={[
+                            {'border-b-2 border-primary': Astro.url.pathname === item.href},
+                            {'border-b-2 border-transparent': Astro.url.pathname !== item.href}
+                        ]}
+                    >
+                        {item.name}
+                    </a>
+                </li>
+            ))}
+        </ul>
+
+        {/* Add the Theme Toggle Button */}
+        <div class="shrink-0"> {/* Prevent theme toggle from shrinking weirdly */}
+            <ThemeToggleButton />
+       </div>
+
+       <div class="lg:hidden"> {/* Show only below lg breakpoint */}
+        <button id="mobile-menu-button" type="button" class="p-1.5 rounded-md cursor-pointer text-gray-400 hover:text-primary dark:text-gray-300 dark:hover:text-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary" aria-controls="mobile-menu" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            {/* Menu Icon */}
+            <svg id="icon-menu" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            {/* Close Icon (Initially hidden) */}
+            <svg id="icon-close" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    </div>
+
+    
+  </nav>
+</header>

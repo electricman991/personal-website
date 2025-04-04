@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro'; // Reuse card component
+
+// --- Option 1: Define projects directly in the file (simpler) ---
+interface Project {
+  title: string,
+  description: string,
+  href?: string,
+  tags: string[],
+  imgSrc?: string,
+}
+
+const projects: Project[] = [
+  {
+    title: 'Youtube Clone',
+    description: `Fullstack clone of the youtube service that focuses mostly on the backend implementation of uploading videos and transcoding the videos. `,
+    imgSrc: '',
+    tags: ['fullstack', 'nextjs', 'typescript'],
+    href: 'https://github.com/electricman991/yt-web-client'
+  },
+  {
+    title: 'Package Tracker',
+    description: `A backend api that allows for the trucks to send information data and have it saved
+    and updated based on reltime data.`,
+    imgSrc: '',
+    tags: ['backend', 'fullstack', 'erlang'],
+    href: '/blog/package-tracker'
+  },
+  {
+    title: 'Real Estate API',
+    description: `An API that serves publicly avaliable data from a csv to a user in json format.`,
+    imgSrc: '',
+    tags: ['backend', 'API', 'erlang'],
+    href: 'https://github.com/electricman991/housing_market'
+  }
+]
+// --- Option 2: Use Content Collections (more scalable) ---
+// If you prefer, create `src/content/projects/` and a `projects` collection
+// in `src/content/config.ts` similar to the blog. Then use:
+// import { getCollection } from 'astro:content';
+// const projectsData = await getCollection('projects');
+// const projects = projectsData.map(p => ({...p.data, href: p.data.repoUrl || '#', body: p.data.description})); // Adapt schema
+---
+<BaseLayout title="Projects">
+  <h1 class="text-3xl md:text-4xl font-bold mb-8 text-gray-900 dark:text-white">My Projects</h1>
+
+  <p class="mb-8 text-lg text-gray-600 dark:text-gray-300">
+      Here are some of the projects I've worked on. Feel free to explore!
+  </p>
+
+  <ul class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    {projects.map((project) => (
+      <Card
+        href={project.href!}
+        title={project.title}
+        body={project.description}
+        tags={project.tags}
+      />
+    ))}
+  </ul>
+
+</BaseLayout>

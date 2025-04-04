@@ -1,0 +1,45 @@
+---
+// Import the global constant defining the site name
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts'; // Define these in src/consts.ts
+
+interface Props {
+	title: string;
+	description: string;
+	image?: string; // Optional image for social media cards
+}
+
+// const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const { title, description, image = '/static/images/twitter-card.png' } = Astro.props; // Default social image
+const fullTitle = `${title} | ${SITE_TITLE}`;
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/static/favicons/favicon.ico" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Canonical URL -->
+<!-- <link rel="canonical" href={canonicalURL} /> -->
+
+<!-- Primary Meta Tags -->
+<title>{fullTitle}</title>
+<meta name="title" content={fullTitle} />
+<meta name="description" content={description} />
+
+<!-- Open Graph / Facebook -->
+<!-- <meta property="og:type" content="website" />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={new URL(image, Astro.url)} /> -->
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:title" content={fullTitle} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<!-- Add fonts, PWA manifest link, etc. here if needed -->

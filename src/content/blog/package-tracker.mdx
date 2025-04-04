@@ -1,0 +1,64 @@
+---
+title: 'Package Tracker'
+pubDate: '2024-07-09'
+tags: ['backend', 'project', 'erlang']
+description: 'Package Tracker allows realtime tracking of packages by using Erlang.'
+---
+
+import { Image } from 'astro:assets';
+import AppOverview from '/public/static/images/project-overview.png';
+import SupervisorLayout from '/public/static/images/supervisor.png';
+
+# <a href="https://github.com/electricman991/business_logic" target="_blank">Package Tracker</a>
+
+Package Tracker is a backend API service that receives a request from a truck with its location data and then stores that location in a database.
+
+This application was made with Erlang and the <a href="https://github.com/ninenines/cowboy" target="_blank">cowboy framework </a> to accept incoming / outgoing http requests. 
+The database that was used for this project is <a href="https://www.tiot.jp/riak-docs/riak/kv/3.2.0/" target="_blank">Riak</a> which is a key value store. 
+
+Built using <a href="https://www.erlang.org/doc/apps/stdlib/gen_server.html" target="_blank">gen_servers</a> and <a href="https://www.erlang.org/doc/apps/stdlib/supervisor.html" target="_blank">supervisors</a> to provide 
+the logic for interacting with the database and recieving events sent by the frontend service. There are four 
+gen_servers that each handle a specific event sent by a delivery truck. When one of those events is sent it gets handled by the gen_server and then will interact with 
+the database to receive the needed information or store new information for a package. Here is an overview of the application:
+
+<Image src={AppOverview} alt="Application Overview" loading="eager" />
+
+When viewing the application we see that when a request is made it starts at a handler that will then send an [erpc](https://www.erlang.org/doc/apps/kernel/erpc.html) 
+call to the backend code. On the backend There is then a call to the database to either store or retrieve the location information. Once the information is retrieved or 
+stored it will then be sent back to the frontend service.
+
+## Overview of Supervisor layout 
+<Image src={SupervisorLayout} alt="Supervisor Layout" />
+
+For the supervisor layout we chose to have 3 supervisors. The first supervisor is a static supervisor that will watch the other two supervisors, the second one will
+watch the gen_servers and the third one will watch the event manager. The event manager will handle all of the logging events.
+
+# API Endpoints
+
+In order for this application to work it needs to be able to recieve requests from the frontend service. Our team came up with four different endpoints that will
+handle the requests that will be sent by the trucks. These endpoints are explained below:
+
+### /location_update
+The location update enpoint will first take in a location request with (lat, long) cordinates and then save the new location to the database. This is achieved
+by first receiving the data then sending that data to a backend function that will then call the database and store the needed data. 
+
+### /location_request
+Location request works by providing a package_id that you want the location for and then returning the (lat, long) cordinates to the person who requested the location.
+We can achieve this with a database lookup for the location and then return the current location that is stored for the package_id.
+
+### /package_transfered
+The package transfered endpoint will handle when a package is transfered to a new facility or to a delivery truck for transportation. This will only be used when
+transferring a package so that a location_id can be also tracked for the package.
+
+### /delivered
+Marks the package as delivered. Once the package has reached the final end destination mark the package as "delivered".
+
+## Logging
+One of the other things that we wanted to implement was logging. We decided on using an event manager to log all of our errors with rabbitmq acting as our storage.
+The event manager is a queue that handles messages that are sent by the truck. The message that is sent is a json object that contains a request id along with error information.
+This information will be stored in a database for later retrieval.
+
+## Putting it all together
+Once we have all of these endpoints working we will then be able to send requests from the trucks to the frontend service and then handle those requests in the backend with 
+<a href="https://www.erlang.org/doc/apps/kernel/erpc.html" target="_blank">erpc</a> calls to the backend code. When viewing the overview of the application we can now go from a request being made to
+the endpoints all the way to the backend and then back to the frontend with the necessary information.

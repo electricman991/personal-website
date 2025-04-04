@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+// import avatar from '/public/static/images/headshot.jpeg'
+import { Image } from 'astro:assets';
+import SocialIcon from '../components/social-icons/index.astro';
+import { PersonalInfo } from '../consts.ts';
+
+const { name, avatar, occupation, company, email, twitter, linkedin, github } = PersonalInfo
+---
+<BaseLayout title="About Me">
+    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+        <div class="space-y-2 pb-8 pt-6 md:space-y-5">
+          <h1 class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+            About
+          </h1>
+        </div>
+        <div class="items-start space-y-2 xl:grid xl:grid-cols-3 xl:gap-x-8 xl:space-y-0">
+          <div class="flex flex-col items-center space-x-2 pt-8">
+            {avatar && (
+              <Image
+                src={avatar}
+                alt="avatar"
+                width={192}
+                height={192}
+                class="h-48 w-48 rounded-full"
+                loading="eager"
+              />
+            )}
+            <h3 class="pb-2 pt-4 text-2xl font-bold leading-8 tracking-tight">{name}</h3>
+            <div class="text-gray-500 dark:text-gray-400">{occupation}</div>
+            <div class="text-gray-500 dark:text-gray-400">{company}</div>
+            <div class="flex space-x-3 pt-6">
+                <SocialIcon kind="mail" href={`mailto:${email}`} />
+                <SocialIcon kind="github" href={github} />
+                <SocialIcon kind="linkedin" href={linkedin} />
+                <SocialIcon kind="x" href={twitter} />
+            </div>
+          </div>
+          <div class="prose max-w-none pb-8 pt-8 dark:prose-invert xl:col-span-2">
+            <p>
+                Welcome! I'm Braiden, a Software Developer based in San Diego.
+                I love working with various programming languages and technologies. Some of the languages that I am most familiar with are: Javascript/Typescript, Python, Golang, and Elixir.
+                Some of the technologies that I have worked with include Astro, Nextjs, React, and Elixir Phoenix for creating web applications. For backend applications I have used
+                Golang and Erlang/Elxir. For a list of all my projects visit my <a href="/projects">projects page</a>.
+              </p>
+              <p>
+                This website serves as my personal space to share what I'm learning,
+                projects I'm working on, and thoughts on various topics related to
+                technology and beyond.
+              </p>
+
+              <p>
+                Resume Download: <a href="/static/Braiden_Sommer_Resume.pdf">Resume</a>
+              </p>
+              <!-- <h2>My Journey</h2>
+              <p>
+                I started my journey into programming in 2020 when I was in my freshman year of college. I had done very little programming before that point and was interested to see what I could learn.
+                From that point I began learning Python and enjoying how I could solve problems by using code. During this time I learned many different skills along with all the basic data structure 
+                algorithims. Once I started to understand more I began to explore web development and how I can create a website using HTML, CSS, and javascript. Once I learned how I could create a simple
+                website I explored React and Nextjs to create a fullstack application. Also while in school I learned about erlang and elixir which was my first experience with functional programming languages.
+                I have enjoyed the whole journey and look forward to continue learning and improving my skills in any role that I find myself in.
+              </p> -->
+          </div>
+        </div>
+      </div>
+</BaseLayout>

@@ -1,11 +1,46 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_DESCRIPTION } from '../consts';
+// Fetch latest 3 blog posts for preview
+import { getCollection } from 'astro:content';
+import Card from '../components/Card.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+    .slice(0, 3); // Get latest 3
 ---
+<BaseLayout title="Home" description={SITE_DESCRIPTION}>
+    <section class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">Hi, I'm Braiden</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">{SITE_DESCRIPTION}</p>
+        <div class="mt-8 space-x-4">
+            <a href="/projects" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+                View Projects
+            </a>
+            <a href="/about" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors duration-200 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-500">
+                About Me
+            </a>
+        </div>
+    </section>
 
-<Layout>
-	<Welcome />
-</Layout>
+    <section>
+        <h2 class="text-3xl font-semibold mb-6 text-center text-gray-800 dark:text-gray-200">Latest Blog Posts</h2>
+        <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+                <Card
+                    href={`/blog/${post.slug}/`}
+                    title={post.data.title}
+                    body={post.data.description}
+                    pubDate={post.data.pubDate}
+                    tags={post.data.tags}
+                />
+            ))}
+        </ul>
+        <div class="text-center mt-8">
+             <a href="/blog" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+                 View All Posts →
+             </a>
+        </div>
+    </section>
+
+</BaseLayout>

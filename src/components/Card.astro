@@ -1,0 +1,37 @@
+---
+import Tag from './Tag.astro';
+
+interface Props {
+	href: string;
+	title: string;
+	body: string;
+    tags?: string[]; // Optional tags array
+    pubDate?: Date; // Optional date
+}
+
+const { href, title, body, tags, pubDate } = Astro.props;
+---
+<li class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+	<a href={href} class="block p-6">
+		<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+			{title}
+		</h2>
+        {pubDate && (
+            <time datetime={pubDate.toISOString()} class="text-sm text-gray-500 dark:text-gray-400 mb-3 block">
+                {
+                    pubDate.toLocaleDateString('en-us', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    })
+                }
+            </time>
+        )}
+		<p class="text-gray-700 dark:text-gray-300 mb-4">{body}</p>
+        {tags && tags.length > 0 && (
+            <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+                {tags.map((tag) => <Tag tag={tag} />)}
+            </div>
+        )}
+	</a>
+</li>
