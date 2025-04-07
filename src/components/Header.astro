@@ -57,7 +57,57 @@ const navItems = [
     </div>
 
     </div>
-
-    
   </nav>
+
+  {/* Mobile Menu Dropdown (Initially hidden) */}
+  <div class="lg:hidden hidden absolute top-full left-0 right-0 bg-gray-900 dark:bg-gray-800 shadow-lg border-t border-gray-700 dark:border-gray-600" id="mobile-menu">
+    <ul class="px-4 pt-2 pb-4 space-y-2">
+        {navItems.map(item => (
+            <li>
+                <a
+                    href={item.href}
+                    class:list={[
+                        "block py-2 px-3 rounded-md text-base font-medium transition-colors duration-200",
+                        Astro.url.pathname === item.href
+                            ? 'bg-gray-300 text-secondary  dark:text-gray-900' // Active link style
+                            : 'text-white dark:text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600' // Inactive link style
+                    ]}
+                    aria-current={Astro.url.pathname === item.href ? 'page' : false}
+                >
+                    {item.name}
+                </a>
+            </li>
+        ))}
+    </ul>
+</div>
 </header>
+
+<script>
+  const menuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const iconMenu = document.getElementById('icon-menu');
+  const iconClose = document.getElementById('icon-close');
+
+  menuButton?.addEventListener('click', () => {
+    const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+    menuButton.setAttribute('aria-expanded', `${!isExpanded}`);
+    mobileMenu?.classList.toggle('hidden');
+    iconMenu?.classList.toggle('hidden');
+    iconMenu?.classList.toggle('block'); // Ensure it becomes block if not hidden
+    iconClose?.classList.toggle('hidden');
+    iconClose?.classList.toggle('block'); // Ensure it becomes block if not hidden
+  });
+
+  // Close menu if clicking a link (optional, good for SPAs, less critical here)
+//   mobileMenu?.addEventListener('click', (event) => {
+//      if (event.target.tagName === 'A') {
+//         menuButton.setAttribute('aria-expanded', 'false');
+//         mobileMenu?.classList.add('hidden');
+//         iconMenu?.classList.remove('hidden');
+//         iconMenu?.classList.add('block');
+//         iconClose?.classList.add('hidden');
+//         iconClose?.classList.remove('block');
+//      }
+//   });
+
+</script>
